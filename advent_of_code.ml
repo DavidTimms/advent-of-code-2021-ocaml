@@ -6,5 +6,6 @@ let () =
   let chosen_day = int_of_string (Array.get Sys.argv 1) in
   print_endline (match chosen_day with
     | 1 -> solution_to_string Day1.solution
+    | 2 -> solution_to_string Day2.solution
     | _ -> "Puzzle not completed yet"
   )

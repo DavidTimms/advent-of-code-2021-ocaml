@@ -1,4 +1,5 @@
 open Base
+
 let input =
   Utils.read_puzzle_input 1
     |> String.split_lines
@@ -24,7 +25,6 @@ let drop_last_n n values =
           Either.Second [first]
       | Either.Second remaining ->
         Either.Second (first :: remaining)
-
   in
   match drop_last_n_either n values with
   | Either.First _ -> []
