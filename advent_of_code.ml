@@ -8,5 +8,6 @@ let () =
     match chosen_day with
     | 1 -> solution_to_string (Day1.part1, Day1.part2)
     | 2 -> solution_to_string (Day2.part1, Day2.part2)
+    | 3 -> solution_to_string (Day3.part1, Day3.part2)
     | _ -> "Puzzle not completed yet"
   )
