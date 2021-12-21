@@ -27,7 +27,6 @@ let perform_command (x, y) command =
 
 let perform_commands = List.fold ~init:(0, 0) ~f:perform_command
 
-let solution =
-  let part1 = perform_commands input |> fun (x, y) -> x * y in
-  let part2 = 0 in
-  (part1, part2)
+let part1 = perform_commands input |> fun (x, y) -> x * y
+
+let part2 = 0

@@ -39,7 +39,6 @@ let rec sum_sliding_window n values =
     | _ :: rest ->
       List.map2_exn ~f:(+) (drop_last_n (n - 1) values) (sum_sliding_window (n - 1) rest)
 
-let solution = 
-  let part1 = count_increasing input in
-  let part2 = sum_sliding_window 3 input |> count_increasing in
-  (part1, part2)
+let part1 = count_increasing input
+
+let part2 = sum_sliding_window 3 input |> count_increasing

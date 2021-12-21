@@ -1,0 +1,3 @@
+(library
+ (name day)
+ (modules_without_implementation day))
