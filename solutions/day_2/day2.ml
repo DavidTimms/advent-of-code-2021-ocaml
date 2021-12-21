@@ -23,10 +23,20 @@ let perform_command (x, y) command =
   match command with
   | Forward distance -> (x, y + distance)
   | Up distance -> (x - distance, y)
-  | Down distance -> (x + distance, y) 
+  | Down distance -> (x + distance, y)
 
-let perform_commands = List.fold ~init:(0, 0) ~f:perform_command
+let perform_commands =
+  List.fold ~init:(0, 0) ~f:perform_command
+
+let perform_command_with_aim (x, y, aim) command =
+  match command with
+  | Forward distance -> (x + distance, y + (distance * aim), aim)
+  | Up amount -> (x, y, aim - amount)
+  | Down amount -> (x, y, aim + amount)
+
+let perform_commands_with_aim =
+  List.fold ~init:(0, 0, 0) ~f:perform_command_with_aim
 
 let part1 = perform_commands input |> fun (x, y) -> x * y
 
-let part2 = 0
+let part2 = perform_commands_with_aim input |> fun (x, y, _) -> x * y
