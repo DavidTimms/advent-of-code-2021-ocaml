@@ -25,6 +25,34 @@ let find_gamma_and_epsilon report =
       (Int.shift_left gamma 1, 1 + Int.shift_left epsilon 1)
   )
 
+let digits_to_int =
+  List.fold ~init:0 ~f:(fun current digit -> digit + Int.shift_left current 1)
+
+let partition_by_nth_digit n report =
+  List.partition_tf report ~f:(fun digits -> (List.nth_exn digits n) = 1)
+
+let rec o2_generator_rating ratings n =
+  match ratings with
+  | [] -> raise (Failure "Unable to find oxygen generator rating")
+  | rating :: [] -> digits_to_int rating
+  | _ ->
+    let (ones, zeros) = partition_by_nth_digit n ratings in
+    if List.length ones >= List.length zeros then
+      o2_generator_rating ones (n + 1)
+    else
+      o2_generator_rating zeros (n + 1)
+
+let rec co2_scrubber_rating ratings n =
+  match ratings with
+  | [] -> raise (Failure "Unable to find CO2 scrubber rating")
+  | rating :: [] -> digits_to_int rating
+  | _ ->
+    let (ones, zeros) = partition_by_nth_digit n ratings in
+    if List.length ones < List.length zeros then
+      co2_scrubber_rating ones (n + 1)
+    else
+      co2_scrubber_rating zeros (n + 1)
+
 let input =
   Utils.read_puzzle_input 3
   |> String.split_lines
@@ -34,4 +62,5 @@ let part1 =
   let (gamma, epsilon) = find_gamma_and_epsilon input in
   gamma * epsilon
 
-let part2 = 0
+let part2 =
+  o2_generator_rating input 0 * co2_scrubber_rating input 0
