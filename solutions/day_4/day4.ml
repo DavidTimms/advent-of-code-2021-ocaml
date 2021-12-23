@@ -59,8 +59,11 @@ let board_has_won drawn_numbers board =
   Set.length incomplete_rows < 5 || Set.length incomplete_cols < 5
 
 
-let find_winning_board drawn_numbers =
+let find_winning_board drawn_numbers: board list -> board option =
   List.find ~f:(board_has_won drawn_numbers)
+
+let remove_completed_boards drawn_numbers: board list -> board list =
+  List.filter ~f:(Fn.non (board_has_won drawn_numbers))
 
 let calculate_score drawn_numbers final_number board =
   let is_unmarked = Fn.non (Set.mem drawn_numbers) in
@@ -72,16 +75,33 @@ let calculate_score drawn_numbers final_number board =
   sum_of_unmarked_numbers * final_number
 
 let find_winning_score game =
+  let open Continue_or_stop in
   List.fold_until game.drawn_numbers
-    ~init:(Set.empty (module Int))
+    ~init:empty_int_set
     ~f:(fun previous_numbers drawn_number ->
       let drawn_numbers = Set.add previous_numbers drawn_number in
       match find_winning_board drawn_numbers game.boards with
-      | None -> Continue_or_stop.Continue drawn_numbers
-      | Some board -> Continue_or_stop.Stop (calculate_score drawn_numbers drawn_number board)
+      | None -> Continue drawn_numbers
+      | Some board -> Stop (calculate_score drawn_numbers drawn_number board)
     )
     ~finish:(fun _ -> raise (Failure "No winner found"))
 
+let find_losing_score game =
+  let open Continue_or_stop in
+  List.fold_until game.drawn_numbers
+    ~init:(empty_int_set, game.boards)
+    ~f:(fun (previous_numbers, previous_remaining_boards) drawn_number ->
+      let drawn_numbers =
+        Set.add previous_numbers drawn_number in
+      let remaining_boards =
+        remove_completed_boards drawn_numbers previous_remaining_boards in
+      if List.is_empty remaining_boards then
+        let losing_board = List.hd_exn previous_remaining_boards in
+        Stop (calculate_score drawn_numbers drawn_number losing_board)
+      else
+        Continue (drawn_numbers, remaining_boards)
+    )
+    ~finish:(fun _ -> raise (Failure "Some boards will never win"))
 let part1 = find_winning_score input
 
-let part2 = 0
+let part2 = find_losing_score input
