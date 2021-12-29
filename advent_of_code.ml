@@ -12,5 +12,6 @@ let () =
     | 4 -> solution_to_string (Day4.part1, Day4.part2)
     | 5 -> solution_to_string (Day5.part1, Day5.part2)
     | 6 -> solution_to_string (Day6.part1, Day6.part2)
+    | 7 -> solution_to_string (Day7.part1, Day7.part2)
     | _ -> "Puzzle not completed yet"
   )
